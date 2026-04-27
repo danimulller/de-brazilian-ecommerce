@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  dbt_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dbt_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./data:/data
+      - ./dbt:/dbt
+      - ./entrypoint.sh:/entrypoint.sh
+    env_file:
+      - .env
+    working_dir: /dbt
+    command: ["/bin/bash", "/entrypoint.sh"]
