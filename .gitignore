@@ -1,3 +1,6 @@
 target/
 dbt_packages/
 logs/
+
+# Manter pastas vazias no Git
+!**/.gitkeep
