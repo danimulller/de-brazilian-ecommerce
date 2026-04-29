@@ -34,6 +34,7 @@ RAW_SCHEMA  = "raw"
 # CSVs que não devem ser carregados no banco (sem extensão)
 EXCLUDED_TABLES = {
     "olist_geolocation_dataset",
+    "olist_order_reviews_dataset",
 }
 
 DATABASE_URL = (
