@@ -27,8 +27,9 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./data:/data
-      - ./dbt:/dbt
+      - ./data:/data              # CSVs do Kaggle ficam aqui (persistência local)
+      - ./dbt:/dbt                # Projeto dbt
+      - ./scripts:/scripts        # Scripts utilitários (load_raw_data.py)
       - ./entrypoint.sh:/entrypoint.sh
     env_file:
       - .env

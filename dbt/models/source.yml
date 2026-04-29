@@ -1,0 +1,136 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      Dados brutos do dataset Brazilian E-Commerce (Olist), carregados automaticamente
+      no schema `raw` do PostgreSQL a partir dos CSVs do Kaggle.
+    schema: raw
+    tables:
+      - name: olist_customers_dataset
+        description: Dados dos clientes (customer_id, cidade, estado, CEP).
+        columns:
+          - name: customer_id
+            description: Identificador único do cliente por pedido.
+          - name: customer_unique_id
+            description: Identificador real e único do cliente.
+          - name: customer_zip_code_prefix
+            description: CEP do cliente.
+          - name: customer_city
+            description: Cidade do cliente.
+          - name: customer_state
+            description: Estado do cliente (UF).
+
+      - name: olist_orders_dataset
+        description: Pedidos realizados na plataforma Olist.
+        columns:
+          - name: order_id
+            description: Identificador único do pedido.
+          - name: customer_id
+            description: Chave estrangeira para olist_customers_dataset.
+          - name: order_status
+            description: "Status do pedido: delivered, shipped, canceled, etc."
+          - name: order_purchase_timestamp
+            description: Data e hora da compra.
+          - name: order_approved_at
+            description: Data e hora de aprovação do pagamento.
+          - name: order_delivered_carrier_date
+            description: Data de entrega para a transportadora.
+          - name: order_delivered_customer_date
+            description: Data de entrega ao cliente.
+          - name: order_estimated_delivery_date
+            description: Data estimada de entrega informada no momento da compra.
+
+      - name: olist_order_items_dataset
+        description: Itens de cada pedido (produto, preço, frete).
+        columns:
+          - name: order_id
+            description: Chave estrangeira para olist_orders_dataset.
+          - name: order_item_id
+            description: Sequencial do item dentro do pedido.
+          - name: product_id
+            description: Chave estrangeira para olist_products_dataset.
+          - name: seller_id
+            description: Chave estrangeira para olist_sellers_dataset.
+          - name: price
+            description: Preço do item.
+          - name: freight_value
+            description: Valor do frete do item.
+
+      - name: olist_order_payments_dataset
+        description: Pagamentos dos pedidos (parcelamento, tipo de pagamento).
+        columns:
+          - name: order_id
+            description: Chave estrangeira para olist_orders_dataset.
+          - name: payment_sequential
+            description: Sequencial do pagamento (múltiplos métodos possíveis).
+          - name: payment_type
+            description: "Tipo: credit_card, boleto, voucher, debit_card."
+          - name: payment_installments
+            description: Número de parcelas.
+          - name: payment_value
+            description: Valor total do pagamento.
+
+      - name: olist_order_reviews_dataset
+        description: Avaliações dos pedidos feitas pelos clientes.
+        columns:
+          - name: review_id
+            description: Identificador único da avaliação.
+          - name: order_id
+            description: Chave estrangeira para olist_orders_dataset.
+          - name: review_score
+            description: Nota de 1 a 5.
+          - name: review_creation_date
+            description: Data de criação da avaliação.
+          - name: review_answer_timestamp
+            description: Data de resposta da avaliação.
+
+      - name: olist_products_dataset
+        description: Catálogo de produtos.
+        columns:
+          - name: product_id
+            description: Identificador único do produto.
+          - name: product_category_name
+            description: Categoria do produto (em português).
+          - name: product_weight_g
+            description: Peso do produto em gramas.
+          - name: product_length_cm
+            description: Comprimento em cm.
+          - name: product_height_cm
+            description: Altura em cm.
+          - name: product_width_cm
+            description: Largura em cm.
+
+      - name: olist_sellers_dataset
+        description: Dados dos vendedores (lojistas) da plataforma.
+        columns:
+          - name: seller_id
+            description: Identificador único do vendedor.
+          - name: seller_zip_code_prefix
+            description: CEP do vendedor.
+          - name: seller_city
+            description: Cidade do vendedor.
+          - name: seller_state
+            description: Estado do vendedor (UF).
+
+      - name: olist_geolocation_dataset
+        description: Coordenadas geográficas por CEP.
+        columns:
+          - name: geolocation_zip_code_prefix
+            description: CEP de referência.
+          - name: geolocation_lat
+            description: Latitude.
+          - name: geolocation_lng
+            description: Longitude.
+          - name: geolocation_city
+            description: Cidade.
+          - name: geolocation_state
+            description: Estado (UF).
+
+      - name: product_category_name_translation
+        description: Tradução dos nomes de categorias de produtos (PT → EN).
+        columns:
+          - name: product_category_name
+            description: Nome original em português.
+          - name: product_category_name_english
+            description: Nome traduzido para inglês.

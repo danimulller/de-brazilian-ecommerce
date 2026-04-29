@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     vim \
     nano \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -15,8 +16,17 @@ VOLUME /dbt
 
 WORKDIR /dbt
 
-RUN pip install dbt-core==1.11.8
-RUN pip install dbt-postgres==1.10.0
+# dbt
+RUN pip install --no-cache-dir \
+    dbt-core==1.11.8 \
+    dbt-postgres==1.10.0
+
+# Download do Kaggle + carga no PostgreSQL
+RUN pip install --no-cache-dir \
+    kaggle \
+    pandas \
+    psycopg2-binary \
+    sqlalchemy
 
 EXPOSE 8080 3333
 
