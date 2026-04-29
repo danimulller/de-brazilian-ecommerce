@@ -31,3 +31,12 @@ models:
   ecommerce:
     stage:
       +materialized: table
+      +schema: stage          # → cria em ecommerce_stage ou stage
+
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+
+    marts:
+      +materialized: table
+      # sem +schema → cai no schema padrão (public)
