@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: stg_product_category_translation
+    description: Tabela de tradução do nome da categoria.
+    columns:
+      - name: category_name_portuguese
+        description: Nome da categoria em português.
+      - name: category_name_english
+        description: Nome da categoria em inglês.

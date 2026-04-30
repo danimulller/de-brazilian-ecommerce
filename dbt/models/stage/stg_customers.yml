@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Tabela de clientes."
+    columns:
+      - name: customer_id
+        description: Identificador único do cliente por pedido.
+        tests:
+          - unique
+          - not_null
+      - name: customer_city
+        description: Cidade do cliente.
+      - name: customer_state
+        description: Estado do cliente (UF).

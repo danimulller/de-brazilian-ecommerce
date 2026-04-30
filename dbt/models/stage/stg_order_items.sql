@@ -2,8 +2,8 @@ WITH source as (
     SELECT *
     FROM {{ source('raw', 'olist_order_items_dataset') }}
 )
-SELECT order_id,
-    order_item_id,
+SELECT order_item_id,
+    order_id,
     product_id,
     seller_id,
     shipping_limit_date::TIMESTAMP as shipping_limit_date,

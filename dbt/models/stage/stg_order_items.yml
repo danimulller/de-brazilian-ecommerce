@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_order_items
+    description: Tabela de itens do pedido.
+    columns:
+      - name: order_item_id
+        description: Identificador único do item do pedido.
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Identificador único do pedido.
+        tests:
+          - not_null
+          - relationships:
+              field: order_id
+              to: ref('stg_orders')
+      - name: product_id
+        description: Identificador único do produto.
+        tests:
+          - not_null
+          - relationships:
+              field: product_id
+              to: ref('stg_products')
+      - name: seller_id
+        description: Identificador único do vendedor.
+        tests:
+          - not_null
+          - relationships:
+              field: seller_id
+              to: ref('stg_sellers')
+      - name: shipping_limit_date
+        description: Data limite de envio.
+      - name: price_amount
+        description: Valor do item.
+      - name: freight_amount
+        description: Valor do frete.

@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_sellers
+    description: "Tabela de vendedores."
+    columns:
+      - name: seller_id
+        description: Identificador único do vendedor por pedido.
+        tests:
+          - unique
+          - not_null
+      - name: seller_city
+        description: Cidade do vendedor.
+      - name: seller_state
+        description: Estado do vendedor (UF).

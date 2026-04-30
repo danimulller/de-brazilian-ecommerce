@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_order_payments
+    description: Tabela de pagamentos.
+    columns:
+      - name: order_id
+        description: Identificador único do pedido.
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              field: order_id
+              to: ref('stg_orders')
+      - name: payment_sequential
+      - name: payment_type
+      - name: payment_installments
+      - name: payment_amount
