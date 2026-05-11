@@ -2,10 +2,10 @@ version: 2
 
 models:
   - name: stg_order_payments
-    description: Tabela de pagamentos.
+    description: Payments table.
     columns:
       - name: order_id
-        description: Identificador único do pedido.
+        description: Unique order identifier.
         tests:
           - unique
           - not_null
