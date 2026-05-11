@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: mart_sales_performance
+    description: "Sales performance aggregated by month, product category, and customer state."
+
+    columns:
+      - name: year
+        description: "Year when the order was purchased."
+
+      - name: month
+        description: "Month when the order was purchased."
+
+      - name: category_name
+        description: "Product category name in English when available."
+
+      - name: customer_state
+        description: "State of the customer."
+
+      - name: total_orders
+        description: "Total number of delivered orders."
+
+      - name: total_items_sold
+        description: "Total number of sold items."
+
+      - name: total_revenue
+        description: "Total item revenue, excluding freight."
+
+      - name: total_freight
+        description: "Total freight amount."
+
+      - name: total_gmv
+        description: "Total gross merchandise value, including item price and freight."
+
+      - name: avg_order_value
+        description: "Average order value including freight."
+
+      - name: avg_item_price
+        description: "Average item price."
+
+      - name: avg_freight_value
+        description: "Average freight value per item."

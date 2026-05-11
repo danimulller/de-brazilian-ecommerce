@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension with geographic and regional attributes."
+
+    columns:
+      - name: customer_id
+        description: "Unique identifier of the customer."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_city
+        description: "City where the customer is located."
+
+      - name: customer_state
+        description: "State where the customer is located."
+        tests:
+          - not_null
+
+      - name: customer_region
+        description: "Brazilian region derived from the customer state."
+
+  - name: dim_products
+    description: "Product dimension with category and physical attributes."
+
+    columns:
+      - name: product_id
+        description: "Unique identifier of the product."
+        tests:
+          - not_null
+          - unique
+
+      - name: category_name
+        description: "Product category name."
+
+      - name: weight_g
+        description: "Product weight in grams."
+
+      - name: length_cm
+        description: "Product length in centimeters."
+
+      - name: height_cm
+        description: "Product height in centimeters."
+
+      - name: width_cm
+        description: "Product width in centimeters."
+
+      - name: volume_cm
+        description: "Product volume in cubic centimeters, calculated as length_cm * height_cm * width_cm."
+
+      - name: density_g_cm
+        description: "Product density in grams per cubic centimeter, calculated as weight_g / volume_cm."
+
+  - name: dim_sellers
+    description: "Seller dimension with geographic and regional attributes."
+
+    columns:
+      - name: seller_id
+        description: "Unique identifier of the seller."
+        tests:
+          - not_null
+          - unique
+
+      - name: seller_city
+        description: "City where the seller is located."
+
+      - name: seller_state
+        description: "State where the seller is located."
+        tests:
+          - not_null
+
+      - name: seller_region
+        description: "Brazilian region derived from the seller state."
