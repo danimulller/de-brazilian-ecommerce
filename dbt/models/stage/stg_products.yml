@@ -2,20 +2,20 @@ version: 2
 
 models:
   - name: stg_products
-    description: "Tabela de produtos."
+    description: "Products table."
     columns:
       - name: product_id
-        description: Identificador único do produto.
+        description: Unique product identifier.
         tests:
           - unique
           - not_null
       - name: category_name
-        description: Categoria do produto.
+        description: Product category.
       - name: weight_g
-        description: Peso em gramas (g).
+        description: Weight in grams (g).
       - name: length_cm
-        description: Comprimento em centímetros (cm).
+        description: Length in centimeters (cm).
       - name: height_cm
-        description: Altura em centímetros (cm).
+        description: Height in centimeters (cm).
       - name: width_cm
-        description: Largura em centímetros (cm).
+        description: Width in centimeters (cm).

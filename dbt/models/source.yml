@@ -3,134 +3,134 @@ version: 2
 sources:
   - name: raw
     description: >
-      Dados brutos do dataset Brazilian E-Commerce (Olist), carregados automaticamente
-      no schema `raw` do PostgreSQL a partir dos CSVs do Kaggle.
+      Raw data from the Brazilian E-Commerce (Olist) dataset, automatically loaded
+      into the PostgreSQL `raw` schema from Kaggle CSV files.
     schema: raw
     tables:
       - name: olist_customers_dataset
-        description: Dados dos clientes (customer_id, cidade, estado, CEP).
+        description: Customer data (customer_id, city, state, ZIP code).
         columns:
           - name: customer_id
-            description: Identificador único do cliente por pedido.
+            description: Unique customer identifier per order.
           - name: customer_unique_id
-            description: Identificador real e único do cliente.
+            description: Real unique customer identifier.
           - name: customer_zip_code_prefix
-            description: CEP do cliente.
+            description: Customer ZIP code.
           - name: customer_city
-            description: Cidade do cliente.
+            description: Customer city.
           - name: customer_state
-            description: Estado do cliente (UF).
+            description: Customer state (UF).
 
       - name: olist_orders_dataset
-        description: Pedidos realizados na plataforma Olist.
+        description: Orders placed on the Olist platform.
         columns:
           - name: order_id
-            description: Identificador único do pedido.
+            description: Unique order identifier.
           - name: customer_id
-            description: Chave estrangeira para olist_customers_dataset.
+            description: Foreign key to olist_customers_dataset.
           - name: order_status
-            description: "Status do pedido: delivered, shipped, canceled, etc."
+            description: "Order status: delivered, shipped, canceled, etc."
           - name: order_purchase_timestamp
-            description: Data e hora da compra.
+            description: Purchase date and time.
           - name: order_approved_at
-            description: Data e hora de aprovação do pagamento.
+            description: Payment approval date and time.
           - name: order_delivered_carrier_date
-            description: Data de entrega para a transportadora.
+            description: Carrier handoff date.
           - name: order_delivered_customer_date
-            description: Data de entrega ao cliente.
+            description: Customer delivery date.
           - name: order_estimated_delivery_date
-            description: Data estimada de entrega informada no momento da compra.
+            description: Estimated delivery date informed at purchase time.
 
       - name: olist_order_items_dataset
-        description: Itens de cada pedido (produto, preço, frete).
+        description: Items for each order (product, price, freight).
         columns:
           - name: order_id
-            description: Chave estrangeira para olist_orders_dataset.
+            description: Foreign key to olist_orders_dataset.
           - name: order_item_id
-            description: Sequencial do item dentro do pedido.
+            description: Item sequence within the order.
           - name: product_id
-            description: Chave estrangeira para olist_products_dataset.
+            description: Foreign key to olist_products_dataset.
           - name: seller_id
-            description: Chave estrangeira para olist_sellers_dataset.
+            description: Foreign key to olist_sellers_dataset.
           - name: price
-            description: Preço do item.
+            description: Item price.
           - name: freight_value
-            description: Valor do frete do item.
+            description: Item freight value.
 
       - name: olist_order_payments_dataset
-        description: Pagamentos dos pedidos (parcelamento, tipo de pagamento).
+        description: Order payments (installments, payment type).
         columns:
           - name: order_id
-            description: Chave estrangeira para olist_orders_dataset.
+            description: Foreign key to olist_orders_dataset.
           - name: payment_sequential
-            description: Sequencial do pagamento (múltiplos métodos possíveis).
+            description: Payment sequence (multiple methods possible).
           - name: payment_type
-            description: "Tipo: credit_card, boleto, voucher, debit_card."
+            description: "Type: credit_card, boleto, voucher, debit_card."
           - name: payment_installments
-            description: Número de parcelas.
+            description: Number of installments.
           - name: payment_value
-            description: Valor total do pagamento.
+            description: Total payment value.
 
       - name: olist_order_reviews_dataset
-        description: Avaliações dos pedidos feitas pelos clientes.
+        description: Order reviews made by customers.
         columns:
           - name: review_id
-            description: Identificador único da avaliação.
+            description: Unique review identifier.
           - name: order_id
-            description: Chave estrangeira para olist_orders_dataset.
+            description: Foreign key to olist_orders_dataset.
           - name: review_score
-            description: Nota de 1 a 5.
+            description: Score from 1 to 5.
           - name: review_creation_date
-            description: Data de criação da avaliação.
+            description: Review creation date.
           - name: review_answer_timestamp
-            description: Data de resposta da avaliação.
+            description: Review response date.
 
       - name: olist_products_dataset
-        description: Catálogo de produtos.
+        description: Product catalog.
         columns:
           - name: product_id
-            description: Identificador único do produto.
+            description: Unique product identifier.
           - name: product_category_name
-            description: Categoria do produto (em português).
+            description: Product category (in Portuguese).
           - name: product_weight_g
-            description: Peso do produto em gramas.
+            description: Product weight in grams.
           - name: product_length_cm
-            description: Comprimento em cm.
+            description: Length in cm.
           - name: product_height_cm
-            description: Altura em cm.
+            description: Height in cm.
           - name: product_width_cm
-            description: Largura em cm.
+            description: Width in cm.
 
       - name: olist_sellers_dataset
-        description: Dados dos vendedores (lojistas) da plataforma.
+        description: Seller (store) data from the platform.
         columns:
           - name: seller_id
-            description: Identificador único do vendedor.
+            description: Unique seller identifier.
           - name: seller_zip_code_prefix
-            description: CEP do vendedor.
+            description: Seller ZIP code.
           - name: seller_city
-            description: Cidade do vendedor.
+            description: Seller city.
           - name: seller_state
-            description: Estado do vendedor (UF).
+            description: Seller state (UF).
 
       - name: olist_geolocation_dataset
-        description: Coordenadas geográficas por CEP.
+        description: Geographic coordinates by ZIP code.
         columns:
           - name: geolocation_zip_code_prefix
-            description: CEP de referência.
+            description: Reference ZIP code.
           - name: geolocation_lat
             description: Latitude.
           - name: geolocation_lng
             description: Longitude.
           - name: geolocation_city
-            description: Cidade.
+            description: City.
           - name: geolocation_state
-            description: Estado (UF).
+            description: State (UF).
 
       - name: product_category_name_translation
-        description: Tradução dos nomes de categorias de produtos (PT → EN).
+        description: Product category names translation (PT → EN).
         columns:
           - name: product_category_name
-            description: Nome original em português.
+            description: Original name in Portuguese.
           - name: product_category_name_english
-            description: Nome traduzido para inglês.
+            description: Translated name in English.

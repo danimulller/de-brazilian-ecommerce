@@ -3,7 +3,7 @@
 set -e
 
 # ─────────────────────────────────────────────
-# 1. Criar profiles.yml com variáveis de ambiente
+# 1. Create profiles.yml with environment variables
 # ─────────────────────────────────────────────
 mkdir -p ~/.dbt
 
@@ -22,10 +22,10 @@ ecommerce:
       threads: 1
 EOF
 
-echo "[dbt] profiles.yml criado em ~/.dbt/profiles.yml"
+echo "[dbt] profiles.yml created at ~/.dbt/profiles.yml"
 
 # ─────────────────────────────────────────────
-# 2. Criar estrutura de pastas do projeto dbt
+# 2. Create dbt project folder structure
 # ─────────────────────────────────────────────
 DBT_DIR="/dbt"
 
@@ -40,32 +40,32 @@ DIRS=(
   "snapshots"
 )
 
-echo "[dbt] Criando estrutura de pastas do projeto..."
+echo "[dbt] Creating project folder structure..."
 
 for dir in "${DIRS[@]}"; do
   full_path="${DBT_DIR}/${dir}"
   if [ ! -d "$full_path" ]; then
     mkdir -p "$full_path"
     touch "${full_path}/.gitkeep"
-    echo "  ✔ Criado: ${dir}"
+    echo "  ✔ Created: ${dir}"
   else
-    echo "  ↷ Já existe: ${dir}"
+    echo "  ↷ Already exists: ${dir}"
   fi
 done
 
 # ─────────────────────────────────────────────
-# 3. Download do dataset Kaggle
+# 3. Download Kaggle dataset
 # ─────────────────────────────────────────────
 DATA_DIR="/data"
 DATASET="olistbr/brazilian-ecommerce"
 KAGGLE_JSON_PATH="/root/.config/kaggle/kaggle.json"
 
-echo "[kaggle] Verificando credenciais..."
+echo "[kaggle] Checking credentials..."
 
 if [ -z "${KAGGLE_USERNAME}" ] || [ -z "${KAGGLE_KEY}" ]; then
-  echo "[kaggle] ❌ KAGGLE_USERNAME e KAGGLE_KEY não definidos no .env. Pulando download."
+  echo "[kaggle] ❌ KAGGLE_USERNAME and KAGGLE_KEY not defined in .env. Skipping download."
 else
-  # Configura credenciais via arquivo JSON (evita warning do kaggle CLI)
+  # Configure credentials via JSON file (avoids kaggle CLI warning)
   mkdir -p "$(dirname "${KAGGLE_JSON_PATH}")"
   cat > "${KAGGLE_JSON_PATH}" << EOF
 {"username":"${KAGGLE_USERNAME}","key":"${KAGGLE_KEY}"}
@@ -74,38 +74,38 @@ EOF
 
   mkdir -p "${DATA_DIR}"
 
-  # Só faz download se a pasta estiver vazia (idempotente)
+  # Only downloads if the folder is empty (idempotent)
   CSV_COUNT=$(find "${DATA_DIR}" -name "*.csv" 2>/dev/null | wc -l)
 
   if [ "${CSV_COUNT}" -gt 0 ]; then
-    echo "[kaggle] ↷ ${CSV_COUNT} CSV(s) já presentes em ${DATA_DIR}. Pulando download."
+    echo "[kaggle] ↷ ${CSV_COUNT} CSV(s) already present in ${DATA_DIR}. Skipping download."
   else
-    echo "[kaggle] Baixando dataset '${DATASET}'..."
+    echo "[kaggle] Downloading dataset '${DATASET}'..."
 
     kaggle datasets download \
       --dataset "${DATASET}" \
       --path "${DATA_DIR}" \
       --unzip
 
-    echo "[kaggle] ✔ Download concluído."
-    echo "[kaggle] Arquivos disponíveis em ${DATA_DIR}:"
-    ls -lh "${DATA_DIR}"/*.csv 2>/dev/null || echo "  (nenhum CSV encontrado após unzip)"
+    echo "[kaggle] ✔ Download completed."
+    echo "[kaggle] Files available in ${DATA_DIR}:"
+    ls -lh "${DATA_DIR}"/*.csv 2>/dev/null || echo "  (no CSV found after unzip)"
   fi
 
   # ───────────────────────────────────────────
-  # 4. Carregar CSVs no schema `raw` do PostgreSQL
+  # 4. Load CSVs into PostgreSQL `raw` schema
   # ───────────────────────────────────────────
-  echo "[loader] Carregando CSVs no PostgreSQL (schema: raw)..."
+  echo "[loader] Loading CSVs into PostgreSQL (schema: raw)..."
 
   DATA_DIR="${DATA_DIR}" python /scripts/load_raw_data.py
 
-  echo "[loader] ✔ Carga no banco concluída."
+  echo "[loader] ✔ Database load completed."
 fi
 
 # ─────────────────────────────────────────────
-# 5. Verificar conexão dbt
+# 5. Check dbt connection
 # ─────────────────────────────────────────────
-echo "[dbt] Verificando conexão com o banco de dados..."
+echo "[dbt] Checking database connection..."
 
 cd "${DBT_DIR}"
 
@@ -114,16 +114,16 @@ RETRY_INTERVAL=3
 
 for i in $(seq 1 $MAX_RETRIES); do
   if dbt debug --no-version-check 2>&1 | grep -q "Connection test: \[OK\]"; then
-    echo "[dbt] ✔ Conexão com o banco estabelecida com sucesso."
+    echo "[dbt] ✔ Database connection successfully established."
     break
   fi
-  echo "[dbt] Aguardando banco de dados... tentativa ${i}/${MAX_RETRIES}"
+  echo "[dbt] Waiting for database... attempt ${i}/${MAX_RETRIES}"
   sleep $RETRY_INTERVAL
 done
 
-echo "[dbt] Ambiente pronto. Container em execução."
+echo "[dbt] Environment ready. Container running."
 
 # ─────────────────────────────────────────────
-# 6. Manter o container em execução
+# 6. Keep the container running
 # ─────────────────────────────────────────────
 exec tail -f /dev/null
