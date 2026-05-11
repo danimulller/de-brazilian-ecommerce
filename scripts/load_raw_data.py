@@ -1,8 +1,8 @@
 """
 load_raw_data.py
 ────────────────
-Loads all CSV files from the Olist dataset (/data) into the PostgreSQL `raw` schema.
-Each file becomes a table: olist_customers_dataset.csv → raw.olist_customers_dataset
+Carrega todos os CSVs do dataset Olist (/data) no schema `raw` do PostgreSQL.
+Cada arquivo vira uma tabela: olist_customers_dataset.csv → raw.olist_customers_dataset
 """
 
 import os
@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ── Configuration via environment variables ────────────────────────────────────
+# ── Configuração via variáveis de ambiente ────────────────────────────────────
 DB_HOST     = os.environ["DB_HOST"]
 DB_PORT     = os.environ.get("DB_PORT", "5432")
 DB_NAME     = os.environ["DB_NAME"]
@@ -31,7 +31,7 @@ DB_PASSWORD = os.environ["DB_PASSWORD"]
 DATA_DIR    = Path(os.environ.get("DATA_DIR", "/data"))
 RAW_SCHEMA  = "raw"
 
-# CSVs that should not be loaded into the database (without extension)
+# CSVs que não devem ser carregados no banco (sem extensão)
 EXCLUDED_TABLES = {
     "olist_geolocation_dataset",
     "olist_order_reviews_dataset",
@@ -42,8 +42,8 @@ DATABASE_URL = (
     f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-# ── Special type mapping by column ──────────────────────────────────
-# Columns that arrive as strings but represent dates
+# ── Mapeamento de tipos especiais por coluna ──────────────────────────────────
+# Colunas que chegam como string mas representam datas
 DATE_COLS = {
     "olist_orders_dataset": [
         "order_purchase_timestamp",
@@ -60,34 +60,34 @@ DATE_COLS = {
 
 
 def wait_for_db(engine, retries: int = 15, interval: int = 3) -> None:
-    """Wait until PostgreSQL is ready."""
+    """Aguarda o PostgreSQL estar pronto."""
     for attempt in range(1, retries + 1):
         try:
             with engine.connect() as conn:
                 conn.execute(text("SELECT 1"))
-            log.info("Database connection established.")
+            log.info("Conexão com o banco estabelecida.")
             return
         except Exception as exc:
-            log.warning("Database unavailable (attempt %d/%d): %s", attempt, retries, exc)
+            log.warning("Banco indisponível (tentativa %d/%d): %s", attempt, retries, exc)
             time.sleep(interval)
-    log.error("Could not connect to the database after %d attempts.", retries)
+    log.error("Não foi possível conectar ao banco após %d tentativas.", retries)
     sys.exit(1)
 
 
 def create_schema(engine) -> None:
     with engine.begin() as conn:
         conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {RAW_SCHEMA}"))
-    log.info("Schema '%s' ensured.", RAW_SCHEMA)
+    log.info("Schema '%s' garantido.", RAW_SCHEMA)
 
 
 def load_csv(engine, csv_path: Path) -> None:
-    table_name = csv_path.stem  # remove .csv extension
+    table_name = csv_path.stem  # remove extensão .csv
 
-    log.info("Loading %-55s → %s.%s", csv_path.name, RAW_SCHEMA, table_name)
+    log.info("Carregando %-55s → %s.%s", csv_path.name, RAW_SCHEMA, table_name)
 
     df = pd.read_csv(csv_path, low_memory=False)
 
-    # Converts date columns when known
+    # Converte colunas de data quando conhecidas
     for col in DATE_COLS.get(table_name, []):
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], errors="coerce")
@@ -96,13 +96,13 @@ def load_csv(engine, csv_path: Path) -> None:
         name=table_name,
         con=engine,
         schema=RAW_SCHEMA,
-        if_exists="replace",   # always recreates → idempotent
+        if_exists="replace",   # recria sempre → idempotente
         index=False,
         chunksize=5_000,
         method="multi",
     )
 
-    log.info("  ✔ %d rows loaded into %s.%s", len(df), RAW_SCHEMA, table_name)
+    log.info("  ✔ %d linhas carregadas em %s.%s", len(df), RAW_SCHEMA, table_name)
 
 
 def main() -> None:
@@ -110,13 +110,13 @@ def main() -> None:
 
     if not csv_files:
         log.error(
-            "No CSV files found in '%s'. "
-            "Check whether the Kaggle download has finished.",
+            "Nenhum CSV encontrado em '%s'. "
+            "Verifique se o download do Kaggle foi concluído.",
             DATA_DIR,
         )
         sys.exit(1)
 
-    log.info("Found %d CSV file(s) in '%s'.", len(csv_files), DATA_DIR)
+    log.info("Encontrados %d arquivo(s) CSV em '%s'.", len(csv_files), DATA_DIR)
 
     engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
@@ -126,19 +126,19 @@ def main() -> None:
     errors = []
     for csv_path in csv_files:
         if csv_path.stem in EXCLUDED_TABLES:
-            log.info("  ⏭ Skipped (excluded): %s", csv_path.name)
+            log.info("  ⏭ Ignorado (excluído): %s", csv_path.name)
             continue
         try:
             load_csv(engine, csv_path)
         except Exception as exc:
-            log.error("Error while loading '%s': %s", csv_path.name, exc)
+            log.error("Erro ao carregar '%s': %s", csv_path.name, exc)
             errors.append(csv_path.name)
 
     if errors:
-        log.error("Failed to load: %s", ", ".join(errors))
+        log.error("Falha ao carregar: %s", ", ".join(errors))
         sys.exit(1)
 
-    log.info("✅ All CSVs were successfully loaded into schema '%s' successfully.", RAW_SCHEMA)
+    log.info("✅ Todos os CSVs foram carregados no schema '%s' com sucesso.", RAW_SCHEMA)
 
 
 if __name__ == "__main__":
