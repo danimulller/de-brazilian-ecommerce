@@ -2,15 +2,15 @@ version: 2
 
 models:
   - name: stg_orders
-    description: Orders table.
+    description: Tabela de pedidos.
     columns:
       - name: order_id
-        description: Unique order identifier.
+        description: Identificador único do pedido.
         tests:
           - unique
           - not_null
       - name: customer_id
-        description: Unique customer identifier.
+        description: Identificador único do cliente.
         tests:
           - unique
           - not_null
@@ -18,14 +18,14 @@ models:
               field: customer_id
               to: ref('stg_customers')
       - name: purchased_at
-        description: Purchase date.
+        description: Data da compra.
         tests:
           - not_null
       - name: approved_at
-        description: Approval date.
+        description: Data de aprovação.
       - name: delivered_to_carrier_at
-        description: Carrier delivery date.
+        description: Data da entrega à transportadora.
       - name: delivered_to_customer_at
-        description: Customer delivery date.
+        description: Data da entrega ao cliente.
       - name: estimated_delivery_date
-        description: Estimated delivery date.
+        description: Data de entrega estimada.

@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir \
     dbt-core==1.11.8 \
     dbt-postgres==1.10.0
 
-# Kaggle download + PostgreSQL load
+# Download do Kaggle + carga no PostgreSQL
 RUN pip install --no-cache-dir \
     kaggle \
     pandas \
